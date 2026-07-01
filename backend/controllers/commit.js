@@ -17,7 +17,7 @@ async function commitRepo(message){
         const commitId=uuid();
         const commitDir=path.join(commitPath, commitId);
         await fs.mkdir(commitDir, {recursive: true});
-        
+
         for(const file of files){
             await fs.rename(path.join(stagingPath, file), path.join(commitDir, file));
         }

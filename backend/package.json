@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "uuid": "^14.0.1",
     "yargs": "^18.0.0"
   }
 }

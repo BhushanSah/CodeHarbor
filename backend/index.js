@@ -1,3 +1,11 @@
+const express=require('express');
+const dotenv=require('dotenv');
+const cors=require("cors");
+const mongoose=require("mongoose");
+const bodyParser=require('body-parser');
+const http=require("http");
+const {Server}=require("socket.io");
+
 const yargs= require("yargs");
 const {hideBin}= require('yargs/helpers');
 
@@ -8,9 +16,10 @@ const {pullRepo}= require("./controllers/pull");
 const {revertRepo}= require("./controllers/revert");
 const {pushRepo} =require("./controllers/push");
 
+dotenv.config();
 
 yargs(hideBin(process.argv))
-.command("Start", "(Starts a new Server)", {}, startServer )
+.command("start", "(Starts a new Server)", {}, startServer )
 .command("init", "(Initialise a new repository)", {}, initRepo )
 .command("add <file>", "(to add file)", (yargs)=>{
     yargs.positional("file",{
@@ -43,5 +52,43 @@ yargs(hideBin(process.argv))
 .argv;
 
 function startServer(){
-    console.log("Server logic");
+    const app=express();
+    const port=process.env.PORT || 3000;
+
+    app.use(bodyParser.json());
+    app.use(express.json());
+
+    const mongoURI=process.env.MONGODB_URI;
+    mongoose.connect(mongoURI)
+    .then(()=>console.log("MongoDB connected"))
+    .catch((err)=>console.error("Error while connecting database", err));
+
+    app.use(cors({origin: "*"}));
+
+    app.get("/", (req,res)=>{
+        res.send("working");
+    });
+
+    let user="test";
+    const httpServer=http.createServer(app);
+    const io=new Server(httpServer, {cors:{ origin:"*", methods:["GET", "POST"]},});
+    io.on("connection", (socket)=>{
+        socket.on("joinRoom", (userID)=>{
+            user=userID;
+            console.log("----------");
+            console.log(user);
+            console.log("----------");
+            socket.join(userID);
+        });
+    });
+
+    const db= mongoose.connection;
+    db.once("open", async()=>{
+        console.log("CRUD operations called");
+        //CRUD operations
+
+    });
+    httpServer.listen(port, ()=>{
+        console.log(`Server is running on ${port}`);
+    })
 }

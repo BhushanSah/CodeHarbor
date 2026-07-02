@@ -10,6 +10,7 @@ const {pushRepo} =require("./controllers/push");
 
 
 yargs(hideBin(process.argv))
+.command("Start", "(Starts a new Server)", {}, startServer )
 .command("init", "(Initialise a new repository)", {}, initRepo )
 .command("add <file>", "(to add file)", (yargs)=>{
     yargs.positional("file",{
@@ -34,7 +35,13 @@ yargs(hideBin(process.argv))
         describe: "commitID to revert to",
         type:"string",
     });
-}, revertRepo )
+}, (argv)=>{
+    revertRepo(argv.commitID) 
+} )
 .demandCommand(1, "You need at least one command")
 .help()
 .argv;
+
+function startServer(){
+    console.log("Server logic");
+}

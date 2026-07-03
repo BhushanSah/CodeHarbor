@@ -134,19 +134,70 @@ const updateRepoById= async(req,res)=>{
             repository.description = description;
         }
         const updatedRepo=await repository.save();
-        return res.json(repository);
+        return res.json(updatedRepo);
     }catch(err){
         console.error("Error updating Repository:", err.message);
         return res.status(500).send("Server Error");
     }   
 };
 
-const toggleRepoById= async(req,res)=>{
-    res.send("toggled");
+const updateRepoVisibility= async(req,res)=>{
+    const ID=req.params.id;
+    const{visibility}=req.body;
+    try{
+        if (!mongoose.Types.ObjectId.isValid(ID)) {
+            return res.status(400).json({
+                message: "Invalid repository ID",
+            });
+        }
+
+        const repository= await Repository.findById(ID);
+        if (!repository) {
+            return res.status(404).json({
+             message: "Repository not found",
+             });
+        }
+        
+        if (visibility) {
+            if (visibility !== "public" && visibility !== "private") {
+                return res.status(400).json({
+                message: "Visibility must be public or private",
+                });
+            }
+            repository.visibility = visibility;
+        }
+        
+        const updatedRepo=await repository.save();
+        return res.json(updatedRepo);
+    }catch(err){
+        console.error("Error updating visibility:", err.message);
+        return res.status(500).send("Server Error");
+    }   
 };
 
 const deleteRepoById= async(req,res)=>{
-    res.send("repo deleted");
+    const ID=req.params.id;
+    try{
+        if (!mongoose.Types.ObjectId.isValid(ID)) {
+            return res.status(400).json({
+                message: "Invalid repository ID",
+            });
+        }
+
+        const repository= await Repository.findByIdAndDelete(ID);
+        if (!repository) {
+            return res.status(404).json({
+             message: "Repository not found",
+             });
+        }
+        
+
+        const updatedRepo=await repository.save();
+        return res.json(updatedRepo);
+    }catch(err){
+        console.error("Error deleting Repository:", err.message);
+        return res.status(500).send("Server Error");
+    }    
 };
 
 module.exports={
@@ -156,7 +207,7 @@ module.exports={
     fetchRepositoryById,
     fetchRepositoryByName,
     updateRepoById,
-    toggleRepoById,
+    updateRepoVisibility,
     deleteRepoById,
 }
 

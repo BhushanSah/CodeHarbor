@@ -10,6 +10,6 @@ repoRouter.get("/repo/name/:name", repoController.fetchRepositoryByName);
 repoRouter.get("/repo/user/:userID", repoController.fetchRepoForCurrUser);
 repoRouter.put("/repo/update/:id", repoController.updateRepoById);
 repoRouter.delete("/repo/delete/:id", repoController.deleteRepoById);
-repoRouter.patch("/repo/toggle/:id", repoController.toggleRepoById);
+repoRouter.patch("/repo/visibility/:id", repoController.updateRepoVisibility);
 
 module.exports=repoRouter;

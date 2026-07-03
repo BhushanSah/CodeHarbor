@@ -1,6 +1,6 @@
 const jwt=require("jsonwebtoken");
 const bcrypt=require("bcryptjs");
-const {MongoClient, ObjectId, ReturnDocument  }=require("mongodb");
+const {MongoClient, ObjectId}=require("mongodb");
 const dotenv=require("dotenv");
 
 dotenv.config();
@@ -123,7 +123,7 @@ const getUserProfile=async(req,res)=>{
        
 
     }catch(err){
-        console.error("Error during login:", err.message);
+        console.error("Error getting profile:", err.message);
         res.status(500).send("Server Error!");
     }
 };
@@ -168,13 +168,34 @@ const updateUserProfile=async(req,res)=>{
         const { password: _, ...safeUser } = result;
         return res.json(safeUser);
     }catch(err){
-        console.error("Error during login:", err.message);
+        console.error("Error Updating:", err.message);
         res.status(500).send("Server Error!");
     }
 };
 
 const deleteUserProfile=async(req,res)=>{
-    res.send("Profile Deleted ");
+    const currID=req.params.id;
+    try{
+        if (!ObjectId.isValid(currID)) {
+            return res.status(400).json({
+            message: "Invalid user ID",
+            });
+        }
+        await connectClient();
+        const db = client.db("CodeHarbor");
+        const usersCollection = db.collection("users");
+
+        const result=await usersCollection.deleteOne({
+            _id: new ObjectId(currID),
+        });
+        if(result.deletedCount==0){
+            return res.status(404).json({message:"User not Found !!"});
+        }
+        res.json({message:"User Profile deleted!!"})
+    }catch(err){
+        console.error("Error Deleting Profile:", err.message);
+        res.status(500).send("Server Error!");
+    }
 };
 
 module.exports={

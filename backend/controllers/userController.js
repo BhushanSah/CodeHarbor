@@ -1,8 +1,7 @@
 const jwt=require("jsonwebtoken");
 const bcrypt=require("bcryptjs");
-const {MongoClient}=require("mongodb");
+const {MongoClient, ObjectId  }=require("mongodb");
 const dotenv=require("dotenv");
-var ObjectId=require("mongodb").OnjectId;
 
 dotenv.config();
 const uri=process.env.MONGODB_URI;
@@ -105,7 +104,28 @@ const login= async (req,res)=>{
 };
 
 const getUserProfile=async(req,res)=>{
-    res.send("Profile Fetched!!! ");
+    const currID=req.params.id;
+    try{
+        await connectClient();
+        const db = client.db("CodeHarbor");
+        const usersCollection = db.collection("users");
+
+        const user= await usersCollection.findOne(
+            {
+                _id: new ObjectId(currID),
+            });
+        if (!user) {
+            return res.status(400).json({
+             message: "User not Found"
+        });
+        }
+        res.json(user);
+       
+
+    }catch(err){
+        console.error("Error during login:", err.message);
+        res.status(500).send("Server Error!");
+    }
 };
 
 const updateUserProfile=async(req,res)=>{

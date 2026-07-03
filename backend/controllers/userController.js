@@ -65,8 +65,30 @@ const signup = async (req, res) => {
   }
 };
 
-const login=(req,res)=>{
-    res.send("logining ");
+const login= async (req,res)=>{
+    const {email, password}=req.body;
+    try{
+        await connectClient();
+        const db = client.db("CodeHarbor");
+        const usersCollection = db.collection("users");
+
+        const existingUser = await usersCollection.findOne({ email });
+        if (!existingUser) {
+            return res.status(400).json({
+             message: "Invalid Credentials!"
+        });
+        }
+        const isMatch= await bcrypt.compare(password,existingUser.password );
+        if(!isMatch){
+            return res.status(400).json({message: "Invalid Credentials!"});
+        }
+        const token=jwt.sign({id:existingUser._id}, process.env.JWT_SECRET_KEY, {expiresIn:"1hr"});
+        res.json({token, userId:existingUser._id});
+
+    }catch(err){
+        console.error("Error during login:", err.message);
+        res.status(500).send("Server Error!");
+    }
 };
 
 const getUserProfile=(req,res)=>{

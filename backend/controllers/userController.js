@@ -2,6 +2,7 @@ const jwt=require("jsonwebtoken");
 const bcrypt=require("bcryptjs");
 const {MongoClient}=require("mongodb");
 const dotenv=require("dotenv");
+var ObjectId=require("mongodb").OnjectId;
 
 dotenv.config();
 const uri=process.env.MONGODB_URI;
@@ -15,8 +16,20 @@ async function connectClient(){
     }
 }
 
-const getAllUsers= (req,res)=>{
-    
+const getAllUsers= async(req,res)=>{
+    try{
+        await connectClient();
+
+        const db = client.db("CodeHarbor");
+        const usersCollection = db.collection("users");
+
+        const users=await usersCollection.find({}).toArray();
+        res.json(users)
+
+    }catch(err){
+        console.error("Error during fetching:", err.message);
+        return res.status(500).send("Server Error");
+    }
 };
 
 const signup = async (req, res) => {
@@ -91,15 +104,15 @@ const login= async (req,res)=>{
     }
 };
 
-const getUserProfile=(req,res)=>{
+const getUserProfile=async(req,res)=>{
     res.send("Profile Fetched!!! ");
 };
 
-const updateUserProfile=(req,res)=>{
+const updateUserProfile=async(req,res)=>{
     res.send("profile Updated ");
 };
 
-const deleteUserProfile=(req,res)=>{
+const deleteUserProfile=async(req,res)=>{
     res.send("Profile Deleted ");
 };
 

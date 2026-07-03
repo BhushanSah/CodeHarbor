@@ -36,7 +36,6 @@ const getAllRepositories= async(req,res)=>{
     try{
         const repositories= await Repository.find({}).populate("owner").populate("issues");
         return res.json(repositories);
-
     }catch(err){
         console.error("Error during fetching Repositories:", err.message);
         return res.status(500).send("Server Error");
@@ -44,11 +43,48 @@ const getAllRepositories= async(req,res)=>{
 };
 
 const fetchRepositoryById= async(req,res)=>{
-    res.send("fetched repo by id");
+    const repoID=req.params.id;
+    
+    try{
+        if (!mongoose.Types.ObjectId.isValid(repoID)) {
+            return res.status(400).json({
+            message: "Invalid repository ID",
+            });
+        }
+        const repository= await Repository.findById({_id:repoID}).populate("owner").populate("issues");
+        if (!repository) {
+            return res.status(404).json({
+             message: "Repository not found",
+             });
+        }
+        return res.json(repository);
+    }catch(err){
+        console.error("Error during fetching Repository:", err.message);
+        return res.status(500).send("Server Error");
+    }
 };
 
 const fetchRepositoryByName= async(req,res)=>{
-    res.send("fetched repo");
+    const repoName=req.params.name;
+    
+    try{
+        if (!repoName) {
+            return res.status(400).json({
+            message: "Repository name is required",
+            });
+        }
+
+        const repository= await Repository.findOne({name:repoName}).populate("owner").populate("issues");
+        if (!repository) {
+            return res.status(404).json({
+             message: "Repository not found",
+             });
+        }
+        return res.json(repository);
+    }catch(err){
+        console.error("Error during fetching Repository:", err.message);
+        return res.status(500).send("Server Error");
+    }
 };
 
 const fetchRepoForCurrUser= async(req,res)=>{

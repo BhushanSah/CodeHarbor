@@ -2,10 +2,6 @@ const mongoose=require("mongoose");
 const Repository=require("../models/repoModel");
 const User=require("../models/userModel");
 const Issue=require("../models/issueModel");
-const dotenv=require("dotenv");
-
-dotenv.config();
-const uri=process.env.MONGODB_URI;
 
 const createRepository= async(req,res)=>{
     const{ owner, name, issues, content, description, visibility}=req.body;

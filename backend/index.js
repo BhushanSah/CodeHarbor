@@ -5,6 +5,7 @@ const mongoose=require("mongoose");
 const bodyParser=require('body-parser');
 const http=require("http");
 const {Server}=require("socket.io");
+const mainRouter=require("./routes/main.router")
 
 const yargs= require("yargs");
 const {hideBin}= require('yargs/helpers');
@@ -64,10 +65,7 @@ function startServer(){
     .catch((err)=>console.error("Error while connecting database", err));
 
     app.use(cors({origin: "*"}));
-
-    app.get("/", (req,res)=>{
-        res.send("working");
-    });
+    app.use("/", mainRouter);
 
     let user="test";
     const httpServer=http.createServer(app);

@@ -3,7 +3,7 @@ const repoController=require("../controllers/repoController");
 
 const repoRouter=express.Router();
 
-repoRouter.post("/repo/createRepo", repoController.createRepository);
+repoRouter.post("/repo/create", repoController.createRepository);
 repoRouter.get("/repo/all", repoController.getAllRepositories);
 repoRouter.get("/repo/id/:id", repoController.fetchRepositoryById);
 repoRouter.get("/repo/name/:name", repoController.fetchRepositoryByName);

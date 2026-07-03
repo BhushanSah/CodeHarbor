@@ -33,7 +33,14 @@ const createRepository= async(req,res)=>{
 };
 
 const getAllRepositories= async(req,res)=>{
-    res.send("Getting all repos");
+    try{
+        const repositories= await Repository.find({}).populate("owner").populate("issues");
+        return res.json(repositories);
+
+    }catch(err){
+        console.error("Error during fetching Repositories:", err.message);
+        return res.status(500).send("Server Error");
+    }
 };
 
 const fetchRepositoryById= async(req,res)=>{

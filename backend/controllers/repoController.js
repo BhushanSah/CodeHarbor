@@ -97,7 +97,7 @@ const fetchRepoForCurrUser= async(req,res)=>{
         }
 
         const repositories= await Repository.find({owner:userID});
-        if (!repositories || repositories.length==0) {
+        if (repositories.length==0) {
             return res.status(404).json({
              message: "No repositories found for this user",
              });
@@ -110,7 +110,24 @@ const fetchRepoForCurrUser= async(req,res)=>{
 };
 
 const updateRepoById= async(req,res)=>{
-    res.send("repo updated");
+    const ID=req.params.id;
+    const{content, description}=req.body;
+    try{
+
+        const repository= await Repository.findById(ID);
+        if (!repository) {
+            return res.status(404).json({
+             message: "Repository not found",
+             });
+        }
+        repository.content.push(content);
+        repository.description=description;
+        const updatedRepo=await repository.save();
+        return res.json(repository);
+    }catch(err){
+        console.error("Error updating Repository:", err.message);
+        return res.status(500).send("Server Error");
+    }   
 };
 
 const toggleRepoById= async(req,res)=>{

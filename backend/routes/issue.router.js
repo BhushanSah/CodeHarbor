@@ -3,7 +3,7 @@ const issueController=require("../controllers/issueController");
 
 const issueRouter=express.Router();
 
-issueRouter.post("/issue/createIssue", issueController.createIssue);
+issueRouter.post("/issue/createIssue/:repositoryId", issueController.createIssue);
 issueRouter.put("/issue/update/:id", issueController.updateIssueById);
 issueRouter.delete("/issue/delete/:id", issueController.deleteIssueById);
 issueRouter.get("/issue/all", issueController.getAllIssues);

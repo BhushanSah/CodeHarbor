@@ -190,10 +190,7 @@ const deleteRepoById= async(req,res)=>{
              message: "Repository not found",
              });
         }
-        
-
-        const updatedRepo=await repository.save();
-        return res.json(updatedRepo);
+        return res.json({message:"Repository Deleted Succesfully"});
     }catch(err){
         console.error("Error deleting Repository:", err.message);
         return res.status(500).send("Server Error");

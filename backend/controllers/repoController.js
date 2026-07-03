@@ -113,6 +113,11 @@ const updateRepoById= async(req,res)=>{
     const ID=req.params.id;
     const{content, description}=req.body;
     try{
+        if (!mongoose.Types.ObjectId.isValid(ID)) {
+            return res.status(400).json({
+                message: "Invalid repository ID",
+            });
+        }
 
         const repository= await Repository.findById(ID);
         if (!repository) {
@@ -120,8 +125,14 @@ const updateRepoById= async(req,res)=>{
              message: "Repository not found",
              });
         }
-        repository.content.push(content);
-        repository.description=description;
+        
+        if (content) {
+            repository.content.push(content);
+        }
+        
+        if (description) {
+            repository.description = description;
+        }
         const updatedRepo=await repository.save();
         return res.json(repository);
     }catch(err){

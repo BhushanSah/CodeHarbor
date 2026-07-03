@@ -1,6 +1,6 @@
 const jwt=require("jsonwebtoken");
 const bcrypt=require("bcryptjs");
-const {MongoClient, ObjectId  }=require("mongodb");
+const {MongoClient, ObjectId, ReturnDocument  }=require("mongodb");
 const dotenv=require("dotenv");
 
 dotenv.config();
@@ -129,7 +129,48 @@ const getUserProfile=async(req,res)=>{
 };
 
 const updateUserProfile=async(req,res)=>{
-    res.send("profile Updated ");
+    const currID=req.params.id;
+    const{email,password}=req.body;
+
+    try{
+        if (!ObjectId.isValid(currID)) {
+            return res.status(400).json({
+            message: "Invalid user ID",
+            });
+        }
+        await connectClient();
+        const db = client.db("CodeHarbor");
+        const usersCollection = db.collection("users");
+
+        let updatedFields={};
+        if(email){
+            updatedFields.email=email;
+        }
+        if(password){
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            updatedFields.password=hashedPassword;
+        }
+        if (Object.keys(updatedFields).length === 0) {
+            return res.status(400).json({
+            message: "Provide an email or password to update.",
+            });
+        }
+        const result=await usersCollection.findOneAndUpdate({
+            _id: new ObjectId(currID),
+            }, 
+            {$set:updatedFields},
+            {returnDocument:"after"}  
+        );
+        if(!result){
+            return res.status(404).json({message:"User not found!!"});
+        }
+        const { password: _, ...safeUser } = result;
+        return res.json(safeUser);
+    }catch(err){
+        console.error("Error during login:", err.message);
+        res.status(500).send("Server Error!");
+    }
 };
 
 const deleteUserProfile=async(req,res)=>{

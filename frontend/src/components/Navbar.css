@@ -1,0 +1,169 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  width: 100%;
+  min-height: 56px;
+
+  background: #010409;
+  border-bottom: 1px solid #30363d;
+  box-shadow: 0 1px 0 rgba(240, 246, 252, 0.04);
+
+  font-family:
+    "Mona Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.navbar-inner {
+  width: min(1280px, 100%);
+  min-height: 56px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 48px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  box-sizing: border-box;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #e6edf3;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.navbar-brand:hover {
+  color: #ffffff;
+}
+
+.navbar-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.navbar-create {
+  min-height: 32px;
+  padding: 0 11px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  border: 1px solid #30363d;
+  border-radius: 6px;
+
+  background: #21262d;
+  color: #e6edf3;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.navbar-create svg {
+  width: 15px;
+  height: 15px;
+}
+
+.navbar-create:hover {
+  background: #30363d;
+  border-color: #484f58;
+  color: #ffffff;
+}
+
+.navbar-profile {
+  width: 32px;
+  height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #30363d;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #8b949e;
+  text-decoration: none;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.navbar-profile svg {
+  width: 17px;
+  height: 17px;
+}
+
+.navbar-profile:hover {
+  background: #21262d;
+  border-color: #484f58;
+  color: #e6edf3;
+}
+
+.navbar-create.active,
+.navbar-profile.active {
+  border-color: #2f81f7;
+  box-shadow: 0 0 0 2px rgba(47, 129, 247, 0.2);
+}
+
+.navbar-brand:focus-visible,
+.navbar-create:focus-visible,
+.navbar-profile:focus-visible {
+  outline: 2px solid #2f81f7;
+  outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .navbar,
+  .navbar-inner {
+    min-height: 54px;
+  }
+
+  .navbar-create {
+    width: 32px;
+    padding: 0;
+  }
+
+  .navbar-create span {
+    display: none;
+  }
+
+  .navbar-brand {
+    font-size: 15px;
+  }
+
+  .navbar-logo {
+    width: 26px;
+    height: 26px;
+  }
+}

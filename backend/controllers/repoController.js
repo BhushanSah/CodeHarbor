@@ -296,6 +296,63 @@ const listRepositoryFiles = async (req, res) => {
   }
 };
 
+const getRepositoryFile = async (req, res) => {
+  const repoId = req.params.id;
+  const key = req.query.key;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(repoId)) {
+      return res.status(400).json({
+        message: "Invalid repository ID.",
+      });
+    }
+
+    const repository = await Repository.findById(repoId);
+
+    if (!repository) {
+      return res.status(404).json({
+        message: "Repository not found.",
+      });
+    }
+
+    const prefix = `repos/${repoId}/commits/`;
+
+    // Stops someone from requesting an unrelated S3 object.
+    if (!key || !key.startsWith(prefix) || key.endsWith("/")) {
+      return res.status(400).json({
+        message: "Invalid file request.",
+      });
+    }
+
+    const relativeKey = key.replace(prefix, "");
+    const keyParts = relativeKey.split("/");
+
+    const commitId = keyParts.shift();
+    const filePath = keyParts.join("/");
+
+    const result = await s3
+      .getObject({
+        Bucket: S3_BUCKET,
+        Key: key,
+      })
+      .promise();
+
+    return res.status(200).json({
+      key,
+      path: filePath,
+      commitId,
+      content: result.Body.toString("utf8"),
+      contentType: result.ContentType || "text/plain",
+    });
+  } catch (err) {
+    console.error("Error loading S3 file:", err);
+
+    return res.status(500).json({
+      message: "Could not load this file from AWS S3.",
+    });
+  }
+};
+
 module.exports = {
   createRepository,
   getAllRepositories,
@@ -307,6 +364,7 @@ module.exports = {
   updateRepoVisibility,
   getPublicRepositories,
   listRepositoryFiles,
+  getRepositoryFile,
 };
 
 

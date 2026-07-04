@@ -1,35 +1,56 @@
-const fs= require("fs").promises;
-const path=require("path");
-const {v4:uuid}=require("uuid");
+const fs = require("fs").promises;
+const path = require("path");
+const { v4: uuid } = require("uuid");
 
-async function commitRepo(message){
-    const repoPath=path.resolve(process.cwd(),".CodeHarbor");
-    const stagingPath=path.join(repoPath, "staging");
-    const commitPath=path.join(repoPath, "commits");
+async function commitRepo(argv) {
+  const message = argv.message;
 
-    try{
-        const files = await fs.readdir(stagingPath);
+  const repoPath = path.resolve(process.cwd(), ".CodeHarbor");
+  const stagingPath = path.join(repoPath, "staging");
+  const commitsPath = path.join(repoPath, "commits");
 
-        if (files.length === 0) {
-            console.log("Nothing staged to commit.");
-            return;
-        }
-        const commitId=uuid();
-        const commitDir=path.join(commitPath, commitId);
-        await fs.mkdir(commitDir, {recursive: true});
+  try {
+    const stagedItems = await fs.readdir(stagingPath);
 
-        for(const file of files){
-            await fs.rename(path.join(stagingPath, file), path.join(commitDir, file));
-        }
-
-        await fs.writeFile(
-            path.join(commitDir, "commit.json"), JSON.stringify({message, date: new Date().toISOString()})
-        )
-        console.log(`Commit ${commitId} created with message: ${message}`);
-
-    }catch(error){
-        console.error("Error:", error);
+    if (stagedItems.length === 0) {
+      console.log("Nothing staged to commit.");
+      return;
     }
+
+    if (!message || typeof message !== "string") {
+      console.log('Provide a commit message. Example: codeharbor commit -m "Initial commit"');
+      return;
+    }
+
+    const commitId = uuid();
+    const commitDir = path.join(commitsPath, commitId);
+
+    await fs.mkdir(commitDir, { recursive: true });
+
+    // Moves both files and folders.
+    // For example, src/hello.js stays inside src/hello.js.
+    for (const item of stagedItems) {
+      await fs.rename(
+        path.join(stagingPath, item),
+        path.join(commitDir, item)
+      );
+    }
+
+    const commitInfo = {
+      commitId,
+      message,
+      date: new Date().toISOString(),
+    };
+
+    await fs.writeFile(
+      path.join(commitDir, "commit.json"),
+      JSON.stringify(commitInfo, null, 2)
+    );
+
+    console.log(`Commit ${commitId} created: ${message}`);
+  } catch (err) {
+    console.error("Error creating commit:", err.message);
+  }
 }
 
-module.exports={commitRepo};
+module.exports = { commitRepo };

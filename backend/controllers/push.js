@@ -2,18 +2,36 @@ const fs = require("fs").promises;
 const path = require("path");
 const { s3, S3_BUCKET } = require("../config/aws-config");
 
+async function getAllFiles(folderPath) {
+  const entries = await fs.readdir(folderPath, {
+    withFileTypes: true,
+  });
+
+  const files = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(folderPath, entry.name);
+
+    if (entry.isDirectory()) {
+      const nestedFiles = await getAllFiles(fullPath);
+      files.push(...nestedFiles);
+    } else if (entry.isFile()) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
 async function pushRepo() {
   const repoPath = path.resolve(process.cwd(), ".CodeHarbor");
   const commitsPath = path.join(repoPath, "commits");
   const configPath = path.join(repoPath, "config.json");
 
   try {
-    // Read the local CodeHarbor configuration.
     const configData = await fs.readFile(configPath, "utf8");
     const config = JSON.parse(configData);
 
-    // Get the remote saved by:
-    // codeharbor remote add origin <repoId>
     const remoteName = config.currentRemote || "origin";
     const remote = config.remotes?.[remoteName];
 
@@ -25,39 +43,38 @@ async function pushRepo() {
 
     const commitDirs = await fs.readdir(commitsPath);
 
+    if (commitDirs.length === 0) {
+      console.log("No local commits to push.");
+      return;
+    }
+
     for (const commitId of commitDirs) {
       const commitPath = path.join(commitsPath, commitId);
-
       const commitStat = await fs.stat(commitPath);
 
-      // Skip anything inside commits that is not a folder.
       if (!commitStat.isDirectory()) {
         continue;
       }
 
-      const files = await fs.readdir(commitPath);
+      const commitFiles = await getAllFiles(commitPath);
 
-      for (const fileName of files) {
-        const filePath = path.join(commitPath, fileName);
+      for (const localFilePath of commitFiles) {
+        const relativePath = path.relative(commitPath, localFilePath);
 
-        const fileStat = await fs.stat(filePath);
+        // S3 keys should always use forward slashes, even on Windows.
+        const s3FilePath = relativePath.split(path.sep).join("/");
 
-        // Skip nested folders for now.
-        if (fileStat.isDirectory()) {
-          continue;
-        }
-
-        const fileContent = await fs.readFile(filePath);
+        const fileContent = await fs.readFile(localFilePath);
 
         const params = {
           Bucket: config.bucket || S3_BUCKET,
-          Key: `repos/${remote.repoId}/commits/${commitId}/${fileName}`,
+          Key: `repos/${remote.repoId}/commits/${commitId}/${s3FilePath}`,
           Body: fileContent,
         };
 
         await s3.upload(params).promise();
 
-        console.log(`Uploaded: ${fileName}`);
+        console.log(`Uploaded: ${commitId}/${s3FilePath}`);
       }
     }
 

@@ -83,15 +83,71 @@ const updateIssueById= async(req,res)=>{
 };
 
 const deleteIssueById= async(req,res)=>{
-    res.send("deleted issue");
+    const id=req.params.id;
+    try{
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+            error: "Invalid issue ID!",
+            });
+        }    
+        
+       const issue=await Issue.findByIdAndDelete(id);
+       if(!issue){
+        return res.status(400).json({error:"Issue not found!"});
+       }
+        res.status(201).json({
+            message:"Issue deleted!",
+            issue: updatedIssue,
+
+        })
+
+    }catch(err){
+        console.error("Error during Issue deletion:", err.message);
+        return res.status(500).send("Server Error");
+    }
+
 };
 
 const getAllIssues= async(req,res)=>{
-    res.send("fetched all issues");
+    const id=req.params.repoId;
+    try{
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+            error: "Invalid Repo ID!",
+            });
+        }    
+        
+       const issues=await Issue.find({repository:id});
+       if(issues.length === 0){
+        return res.status(400).json({error:"Issues not found!"});
+       }
+        return res.status(200).json(issues)
+
+    }catch(err){
+        console.error("Error during Issue fetch:", err.message);
+        return res.status(500).send("Server Error");
+    }
 };
 
 const getIssueById= async(req,res)=>{
-    res.send("fetched issues");
+    const id=req.params.id;
+    try{
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+            error: "Invalid Repo ID!",
+            });
+        }    
+        
+       const issue=await Issue.findById(id);
+       if(!issue){
+        return res.status(400).json({error:"Issue not found!"});
+       }
+        return res.status(200).json(issue)
+
+    }catch(err){
+        console.error("Error getting Issue:", err.message);
+        return res.status(500).send("Server Error");
+    }
 };
 
 module.exports={

@@ -6,7 +6,7 @@ const issueRouter=express.Router();
 issueRouter.post("/issue/createIssue/:repositoryId", issueController.createIssue);
 issueRouter.put("/issue/update/:id", issueController.updateIssueById);
 issueRouter.delete("/issue/delete/:id", issueController.deleteIssueById);
-issueRouter.get("/issue/all", issueController.getAllIssues);
+issueRouter.get("/issue/all/:repoId", issueController.getAllIssues);
 issueRouter.get("/issue/:id", issueController.getIssueById);
 
 

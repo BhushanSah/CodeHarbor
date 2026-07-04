@@ -2,6 +2,7 @@ const mongoose=require("mongoose");
 const Repository=require("../models/repoModel");
 const User=require("../models/userModel");
 const Issue=require("../models/issueModel");
+const { s3, S3_BUCKET } = require("../config/aws");
 
 const createRepository= async(req,res)=>{
     const{ owner, name, issues, content, description, visibility}=req.body;
@@ -209,17 +210,104 @@ const deleteRepoById= async(req,res)=>{
     }
     };
 
-module.exports={
-    createRepository,
-    getAllRepositories,
-    fetchRepoForCurrUser,
-    fetchRepositoryById,
-    fetchRepositoryByName,
-    updateRepoById,
-    updateRepoVisibility,
-    deleteRepoById,
-    getPublicRepositories,
-}
+const listRepositoryFiles = async (req, res) => {
+  const repoId = req.params.id;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(repoId)) {
+      return res.status(400).json({
+        message: "Invalid repository ID.",
+      });
+    }
+
+    const repository = await Repository.findById(repoId);
+
+    if (!repository) {
+      return res.status(404).json({
+        message: "Repository not found.",
+      });
+    }
+
+    const prefix = `repos/${repoId}/commits/`;
+
+    let continuationToken;
+    const allObjects = [];
+
+    do {
+      const result = await s3
+        .listObjectsV2({
+          Bucket: S3_BUCKET,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+        })
+        .promise();
+
+      allObjects.push(...(result.Contents || []));
+
+      continuationToken = result.IsTruncated
+        ? result.NextContinuationToken
+        : undefined;
+    } while (continuationToken);
+
+    const latestFiles = new Map();
+
+    for (const item of allObjects) {
+      if (!item.Key || item.Key.endsWith("/")) {
+        continue;
+      }
+
+      const relativeKey = item.Key.replace(prefix, "");
+      const parts = relativeKey.split("/");
+
+      const commitId = parts.shift();
+      const filePath = parts.join("/");
+
+      if (!filePath || filePath === "commit.json") {
+        continue;
+      }
+
+      const currentFile = latestFiles.get(filePath);
+
+      if (
+        !currentFile ||
+        new Date(item.LastModified) > new Date(currentFile.lastModified)
+      ) {
+        latestFiles.set(filePath, {
+          key: item.Key,
+          path: filePath,
+          commitId,
+          size: item.Size || 0,
+          lastModified: item.LastModified || null,
+        });
+      }
+    }
+
+    const files = [...latestFiles.values()].sort((a, b) =>
+      a.path.localeCompare(b.path)
+    );
+
+    return res.status(200).json({ files });
+  } catch (err) {
+    console.error("Error loading S3 files:", err);
+
+    return res.status(500).json({
+      message: "Could not load files from AWS S3.",
+    });
+  }
+};
+
+module.exports = {
+  createRepository,
+  getAllRepositories,
+  fetchRepositoryById,
+  fetchRepositoryByName,
+  fetchRepoForCurrUser,
+  updateRepoById,
+  deleteRepoById,
+  updateRepoVisibility,
+  getPublicRepositories,
+  listRepositoryFiles,
+};
 
 
 

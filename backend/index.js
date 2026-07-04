@@ -41,6 +41,31 @@ yargs(hideBin(process.argv))
 })
 .command("push", "(push commits)", {}, pushRepo)
 .command("pull", "(pull commits)", {}, pullRepo)
+.command(
+  "remote add <name> <repoId>",
+  "Connect this local project to an online CodeHarbor repository",
+  (yargs) => {
+    return yargs
+      .positional("name", {
+        type: "string",
+        describe: 'Remote name, usually "origin"',
+      })
+      .positional("repoId", {
+        type: "string",
+        describe: "MongoDB repository ID from CodeHarbor",
+      })
+      .option("api-url", {
+        type: "string",
+        describe: "CodeHarbor backend URL",
+      })
+      .option("force", {
+        type: "boolean",
+        default: false,
+        describe: "Replace an existing remote with the same name",
+      });
+  },
+  remoteCommand
+)
 .command("revert <commitID>", "(revert to Specific commitID)", (yargs)=>{
     yargs.positional("commitID",{
         describe: "commitID to revert to",

@@ -16,7 +16,7 @@ async function pushRepo(){
                 const fileContent= await fs.readFile(filePath);
                 const params={
                     Bucket: S3_BUCKET,
-                    Key: `commits/${commitDir}/${file}`,
+                    Key: `repos/${remote.repoId}/commits/${commitId}/${fileName}`,
                     Body:fileContent,
                 };
                 await s3.upload(params).promise();

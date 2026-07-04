@@ -12,5 +12,6 @@ repoRouter.put("/repo/update/:id", repoController.updateRepoById);
 repoRouter.delete("/repo/delete/:id", repoController.deleteRepoById);
 repoRouter.patch("/repo/visibility/:id", repoController.updateRepoVisibility);
 repoRouter.get("/repo/public", repoController.getPublicRepositories);
+repoRouter.get("/repo/:id/files", repoController.listRepositoryFiles);
 
 module.exports=repoRouter;

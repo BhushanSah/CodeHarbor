@@ -190,8 +190,24 @@ const deleteRepoById= async(req,res)=>{
     }catch(err){
         console.error("Error deleting Repository:", err.message);
         return res.status(500).send("Server Error");
-    }    
+    } 
 };
+
+    const getPublicRepositories = async (req, res) => {
+    try {
+        const repositories = await Repository.find({
+        visibility: "public",
+        }).populate("owner", "username");
+
+        return res.status(200).json(repositories);
+    } catch (err) {
+        console.error("Error fetching public repositories:", err.message);
+
+        return res.status(500).json({
+        message: "Could not fetch public repositories.",
+        });
+    }
+    };
 
 module.exports={
     createRepository,
@@ -202,6 +218,7 @@ module.exports={
     updateRepoById,
     updateRepoVisibility,
     deleteRepoById,
+    getPublicRepositories,
 }
 
 

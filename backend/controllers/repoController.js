@@ -2,7 +2,7 @@ const mongoose=require("mongoose");
 const Repository=require("../models/repoModel");
 const User=require("../models/userModel");
 const Issue=require("../models/issueModel");
-const { s3, S3_BUCKET } = require("../config/aws");
+const { s3, S3_BUCKET } = require("../config/aws-config");
 
 const createRepository= async(req,res)=>{
     const{ owner, name, issues, content, description, visibility}=req.body;

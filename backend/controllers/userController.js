@@ -70,7 +70,7 @@ const signup = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    return res.status(201).json({ token });
+    return res.status(201).json({ token, userId:result.insertedId });
   } catch (err) {
     console.error("Error during signup:", err.message);
     return res.status(500).send("Server Error");

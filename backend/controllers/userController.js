@@ -78,13 +78,13 @@ const signup = async (req, res) => {
 };
 
 const login= async (req,res)=>{
-    const {email, password}=req.body;
+    const {username, password}=req.body;
     try{
         await connectClient();
         const db = client.db("CodeHarbor");
         const usersCollection = db.collection("users");
 
-        const existingUser = await usersCollection.findOne({ email });
+        const existingUser = await usersCollection.findOne({ username });
         if (!existingUser) {
             return res.status(400).json({
              message: "Invalid Credentials!"

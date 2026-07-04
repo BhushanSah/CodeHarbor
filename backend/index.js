@@ -16,6 +16,7 @@ const {commitRepo}= require("./controllers/commit");
 const {pullRepo}= require("./controllers/pull");
 const {revertRepo}= require("./controllers/revert");
 const {pushRepo} =require("./controllers/push");
+const { remoteCommand } = require("./controllers/remote");
 
 dotenv.config();
 

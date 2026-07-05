@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./dashboard.css";
+import Navbar from "../Navbar";
 
 const RepoIcon = () => (
   <svg
@@ -121,7 +122,7 @@ const Dashboard = () => {
 
     const fetchSuggestedRepositories = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/repo/all");
+        const res = await axios.get("http://localhost:3000/repo/public");
 
         setSuggestedRepositories(
           Array.isArray(res.data) ? res.data : res.data.repositories || []
@@ -169,6 +170,8 @@ const Dashboard = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="dashboard-page">
       <section className="dash-layout">
         <aside className="dash-aside">
@@ -252,6 +255,7 @@ const Dashboard = () => {
         </aside>
       </section>
     </div>
+    </>
   );
 };
 

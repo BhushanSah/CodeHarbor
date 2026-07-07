@@ -69,7 +69,6 @@
 }
 
 .issues-new-button,
-.issue-status-button,
 .issue-cancel-button {
   min-height: 34px;
   padding: 0 13px;
@@ -270,6 +269,10 @@
   background: var(--surface);
   text-align: center;
 }
+.issue-view-link {
+  grid-column: 2;
+  justify-self: start;
+}
 
 .issues-empty svg {
   width: 28px;
@@ -318,4 +321,21 @@
     grid-column: 2;
     justify-self: start;
   }
+}
+
+.issue-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.issue-card:hover {
+  text-decoration: none;
+}
+
+.issue-view-link {
+  align-self: center;
+  color: #58a6ff;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
 }

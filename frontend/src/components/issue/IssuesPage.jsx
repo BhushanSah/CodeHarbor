@@ -321,7 +321,7 @@ const IssuesPage = () => {
                 const isOpen = issue.status === "open";
 
                 return (
-                  <article className="issue-card" key={issue._id}>
+                  <Link to={`/repo/${id}/issues/${issue._id}`} className="issue-card" key={issue._id} >
                     <div
                       className={`issue-status-icon ${
                         isOpen
@@ -357,19 +357,8 @@ const IssuesPage = () => {
                       </p>
                     </div>
 
-                    <button
-                      type="button"
-                      className="issue-status-button"
-                      onClick={() =>
-                        updateIssueStatus(
-                          issue._id,
-                          isOpen ? "closed" : "open"
-                        )
-                      }
-                    >
-                      {isOpen ? "Close" : "Reopen"}
-                    </button>
-                  </article>
+                    <span className="issue-view-link"> View issue → </span>
+                  </Link>
                 );
               })
             )}

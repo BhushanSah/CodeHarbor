@@ -352,14 +352,20 @@ const RepositoryPage = () => {
           <section className="repository-content-grid">
             <div className="repository-main-column">
               <div className="repository-tabs">
-                <button type="button" className="repository-tab is-active">
+                <Link
+                  to={`/repo/${id}`}
+                  className="repository-tab is-active"
+                >
                   Code
-                </button>
+                </Link>
 
-                <button type="button" className="repository-tab" disabled>
+                <Link
+                  to={`/repo/${id}/issues`}
+                  className="repository-tab"
+                >
                   Issues
                   <span>{issueCount}</span>
-                </button>
+                </Link>
               </div>
 
               <section className="repository-files-card">

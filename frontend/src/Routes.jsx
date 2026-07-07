@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
 
+
 import Dashboard from "./components/dashboard/Dashboard";
 import Profile from "./components/user/Profile";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import CreateRepository from "./components/repo/CreateRepository";
 import RepositoryPage from "./components/repo/RepositoryPage";
+import IssuesPage from "./components/issue/IssuesPage";
 
 import { useAuth } from "./authContext";
 
@@ -60,6 +62,10 @@ const ProjectRoutes = () => {
     {
       path: "/repo/:id",
       element: <RepositoryPage />,
+    },
+    {
+      path: "/repo/:id/issues",
+      element: <IssuesPage />,
     },
   ]);
 

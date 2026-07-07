@@ -680,3 +680,6 @@ button.repository-file-row:focus-visible {
   color: #ff7b72;
 }
 
+.repository-tab {
+  text-decoration: none;
+}

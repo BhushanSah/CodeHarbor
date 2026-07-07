@@ -5,10 +5,15 @@ const IssueSchema= new Schema({
     title:{
         type:String,
         required:true,
+        trim: true,
+        maxlength: 140,
+        
     },
     description:{
         type:String,
         required:true,
+        trim: true,
+        maxlength: 10000,
     },
     status:{
         type:String,
@@ -20,7 +25,11 @@ const IssueSchema= new Schema({
         ref:"Repository",
         required:true,
     },
-});
+},
+    {
+    timestamps: true,
+  }
+);
 
 const Issue = mongoose.model("Issue", IssueSchema);
 module.exports = Issue;

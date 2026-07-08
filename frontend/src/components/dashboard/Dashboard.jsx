@@ -243,15 +243,26 @@ const Dashboard = () => {
             </div>
           )}
         </main>
-
         <aside className="dash-aside">
-          <h3 className="dash-heading">Upcoming Events</h3>
+          <h3 className="dash-heading">Quick Start</h3>
 
-          <ul className="event-list">
-            <li className="event-item">
-              <p>Tech Conference - Dec 15</p>
-            </li>
-          </ul>
+          <div className="quick-start-card">
+            <p>Start tracking a project with CodeHarbor.</p>
+
+            <ol className="quick-start-list">
+              <li>Create a repository</li>
+              <li>Connect your local folder</li>
+              <li>Push your first commit</li>
+            </ol>
+
+            <button
+              type="button"
+              className="quick-start-button"
+              onClick={() => navigate("/docs")}
+            >
+              View CLI docs →
+            </button>
+          </div>
         </aside>
       </section>
     </div>

@@ -60,6 +60,14 @@ const IssueDetailPage = () => {
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState("");
 
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [commentsError, setCommentsError] = useState("");
+
+  const [commentBody, setCommentBody] = useState("");
+  const [creatingComment, setCreatingComment] = useState(false);
+  const [commentFormError, setCommentFormError] = useState("");
+
   useEffect(() => {
     const loadIssuePage = async () => {
       try {
@@ -93,6 +101,35 @@ const IssueDetailPage = () => {
 
     loadIssuePage();
   }, [id, issueId]);
+
+  useEffect(() => {
+  const loadComments = async () => {
+    try {
+      setCommentsLoading(true);
+      setCommentsError("");
+
+      const response = await axios.get(
+        `http://localhost:3000/comment/all/${issueId}`
+      );
+
+      setComments(response.data.comments || []);
+    } catch (err) {
+      console.error(
+        "Could not load comments:",
+        err.response?.status,
+        err.response?.data || err.message
+      );
+
+      setCommentsError(
+        err.response?.data?.error || "Could not load comments."
+      );
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
+
+    loadComments();
+  }, [issueId]);
 
   const updateIssue = async (updates) => {
     try {
@@ -191,6 +228,71 @@ const IssueDetailPage = () => {
     }
   };
 
+  const handleCreateComment = async (event) => {
+  event.preventDefault();
+
+  if (!commentBody.trim()) {
+    setCommentFormError("Comment cannot be empty.");
+    return;
+  }
+
+  try {
+    setCreatingComment(true);
+    setCommentFormError("");
+
+    const response = await axios.post(
+      `http://localhost:3000/comment/create/${issueId}`,
+      {
+        body: commentBody,
+      }
+    );
+
+    setComments((currentComments) => [
+      ...currentComments,
+      response.data.comment,
+    ]);
+
+    setCommentBody("");
+  } catch (err) {
+    console.error(
+      "Could not create comment:",
+      err.response?.status,
+      err.response?.data || err.message
+    );
+
+    setCommentFormError(
+      err.response?.data?.error || "Could not create this comment."
+    );
+  } finally {
+    setCreatingComment(false);
+  }
+};
+
+const handleDeleteComment = async (commentId) => {
+  const shouldDelete = window.confirm("Delete this comment?");
+
+  if (!shouldDelete) return;
+
+  try {
+    await axios.delete(
+      `http://localhost:3000/comment/delete/${commentId}`
+    );
+
+    setComments((currentComments) =>
+      currentComments.filter((comment) => comment._id !== commentId)
+    );
+  } catch (err) {
+    console.error(
+      "Could not delete comment:",
+      err.response?.status,
+      err.response?.data || err.message
+    );
+
+    alert(
+      err.response?.data?.error || "Could not delete this comment."
+    );
+  }
+};
   if (loading) {
     return (
       <>
@@ -367,12 +469,82 @@ const IssueDetailPage = () => {
           )}
 
           <section className="issue-detail-discussion">
-            <h2>Discussion</h2>
+            <div className="issue-detail-discussion-header">
+              <h2>Discussion</h2>
 
-            <p>
-              Comments will be added in the next version of the Issues
-              feature.
-            </p>
+              <span>{comments.length} comment{comments.length === 1 ? "" : "s"}</span>
+            </div>
+
+            <form className="issue-comment-form" onSubmit={handleCreateComment}>
+              <textarea
+                value={commentBody}
+                rows="5"
+                maxLength="10000"
+                placeholder="Add a comment..."
+                onChange={(event) => {
+                  setCommentBody(event.target.value);
+                  setCommentFormError("");
+                }}
+              />
+
+              {commentFormError && (
+                <p className="issue-comment-error">{commentFormError}</p>
+              )}
+
+              <div className="issue-comment-form-actions">
+                <button
+                  type="submit"
+                  className="issue-detail-status-button"
+                  disabled={creatingComment}
+                >
+                  {creatingComment ? "Posting..." : "Comment"}
+                </button>
+              </div>
+            </form>
+
+            {commentsLoading ? (
+              <p className="issue-comments-message">Loading comments...</p>
+            ) : commentsError ? (
+              <p className="issue-comments-message issue-comments-message--error">
+                {commentsError}
+              </p>
+            ) : comments.length === 0 ? (
+              <p className="issue-comments-message">
+                No comments yet. Start the discussion.
+              </p>
+            ) : (
+              <div className="issue-comments-list">
+                {comments.map((comment) => (
+                  <article className="issue-comment-card" key={comment._id}>
+                      <div className="issue-comment-header">
+                        <div>
+                          <strong>{comment.author || "CodeHarbor user"}</strong>
+
+                          <span>
+                            {comment.createdAt
+                              ? new Date(comment.createdAt).toLocaleDateString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })
+                              : "recently"}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="issue-comment-delete-button"
+                          onClick={() => handleDeleteComment(comment._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+
+                      <p>{comment.body}</p>
+                    </article>
+                ))}
+              </div>
+            )}
           </section>
 
           <section className="issue-detail-danger-zone">

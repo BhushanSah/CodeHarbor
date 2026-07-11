@@ -303,3 +303,133 @@
     width: 100%;
   }
 }
+
+.issue-detail-discussion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.issue-detail-discussion-header h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.issue-detail-discussion-header span {
+  color: #8b949e;
+  font-size: 13px;
+}
+
+.issue-comment-form {
+  margin-top: 18px;
+}
+
+.issue-comment-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 12px;
+  background: #0d1117;
+  color: #e6edf3;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.issue-comment-form textarea:focus {
+  outline: none;
+  border-color: #2f81f7;
+  box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.18);
+}
+
+.issue-comment-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.issue-comment-error {
+  margin: 9px 0 0;
+  color: #ff7b72;
+  font-size: 13px;
+}
+
+.issue-comments-message {
+  margin: 18px 0 0;
+  padding: 14px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #0d1117;
+  color: #8b949e;
+  font-size: 13px;
+}
+
+.issue-comments-message--error {
+  color: #ff7b72;
+}
+
+.issue-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.issue-comment-card {
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #0d1117;
+}
+
+.issue-comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #30363d;
+  background: #161b22;
+}
+
+.issue-comment-header strong {
+  color: #e6edf3;
+  font-size: 13px;
+}
+
+.issue-comment-header span {
+  color: #8b949e;
+  font-size: 12px;
+}
+
+.issue-comment-card p {
+  margin: 0;
+  padding: 13px 12px;
+  color: #c9d1d9;
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+.issue-comment-header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.issue-comment-delete-button {
+  border: 1px solid rgba(248, 81, 73, 0.6);
+  border-radius: 6px;
+  background: transparent;
+  color: #ff7b72;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.issue-comment-delete-button:hover {
+  background: rgba(248, 81, 73, 0.12);
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./dashboard.css";
+import "./Dashboard.css";
 import Navbar from "../Navbar";
 import API_BASE_URL from "../../api";
 

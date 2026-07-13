@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
 import "./Profile.css";
 import Navbar from "../Navbar";
-
+import HeatMapProfile from "./HeatMap";
 const UserIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <circle cx="8" cy="5" r="2.8" stroke="currentColor" strokeWidth="1.4" />
@@ -347,6 +347,7 @@ const Profile = () => {
               ))}
             </div>
           )}
+          <HeatMapProfile userId={userId} />
         </section>
       </main>
     </div>

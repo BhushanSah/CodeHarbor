@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "../Navbar";
 import "./issuesPage.css";
+import API_BASE_URL from "../../api";
 
 const OpenIssueIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -66,8 +67,8 @@ const IssuesPage = () => {
         setErrorMessage("");
 
         const [repoResponse, issuesResponse] = await Promise.all([
-          axios.get(`http://localhost:3000/repo/id/${id}`),
-          axios.get(`http://localhost:3000/issue/all/${id}`),
+          axios.get(`${API_BASE_URL}/repo/id/${id}`),
+          axios.get(`${API_BASE_URL}/issue/all/${id}`),
         ]);
 
         setRepository(repoResponse.data);
@@ -109,7 +110,7 @@ const IssuesPage = () => {
       setFormError("");
 
       const response = await axios.post(
-        `http://localhost:3000/issue/createIssue/${id}`,
+        `${API_BASE_URL}/issue/createIssue/${id}`,
         {
           title,
           description,
@@ -143,7 +144,7 @@ const IssuesPage = () => {
   const updateIssueStatus = async (issueId, newStatus) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/issue/update/${issueId}`,
+        `${API_BASE_URL}/issue/update/${issueId}`,
         {
           status: newStatus,
         }

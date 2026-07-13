@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../Navbar";
 import "./issueDetailPage.css";
+import API_BASE_URL from "../../api";
 
 const OpenIssueIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -75,8 +76,8 @@ const IssueDetailPage = () => {
         setErrorMessage("");
 
         const [repositoryResponse, issueResponse] = await Promise.all([
-          axios.get(`http://localhost:3000/repo/id/${id}`),
-          axios.get(`http://localhost:3000/issue/${issueId}`),
+          axios.get(`${API_BASE_URL}/repo/id/${id}`),
+          axios.get(`${API_BASE_URL}/issue/${issueId}`),
         ]);
 
         setRepository(repositoryResponse.data);
@@ -109,7 +110,7 @@ const IssueDetailPage = () => {
       setCommentsError("");
 
       const response = await axios.get(
-        `http://localhost:3000/comment/all/${issueId}`
+        `${API_BASE_URL}/comment/all/${issueId}`
       );
 
       setComments(response.data.comments || []);
@@ -137,7 +138,7 @@ const IssueDetailPage = () => {
       setActionError("");
 
       const response = await axios.put(
-        `http://localhost:3000/issue/update/${issueId}`,
+        `${API_BASE_URL}/issue/update/${issueId}`,
         updates
       );
 
@@ -209,7 +210,7 @@ const IssueDetailPage = () => {
       setActionError("");
 
       await axios.delete(
-        `http://localhost:3000/issue/delete/${issueId}`
+        `${API_BASE_URL}/issue/delete/${issueId}`
       );
 
       navigate(`/repo/${id}/issues`);
@@ -241,7 +242,7 @@ const IssueDetailPage = () => {
     setCommentFormError("");
 
     const response = await axios.post(
-      `http://localhost:3000/comment/create/${issueId}`,
+      `${API_BASE_URL}/comment/create/${issueId}`,
       {
         body: commentBody,
       }
@@ -275,7 +276,7 @@ const handleDeleteComment = async (commentId) => {
 
   try {
     await axios.delete(
-      `http://localhost:3000/comment/delete/${commentId}`
+      `${API_BASE_URL}/comment/delete/${commentId}`
     );
 
     setComments((currentComments) =>

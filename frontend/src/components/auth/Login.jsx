@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import logo from "../../assets/github-mark-white.svg";
 import "./auth.css";
+import API_BASE_URL from "../../api";
 
 const PersonIcon = () => (
   <svg className="field-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -47,7 +48,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:3000/login", {
+      const res = await axios.post(`${API_BASE_URL}/login`, {
         username: username,
         password: password,  
       });

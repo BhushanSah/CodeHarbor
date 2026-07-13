@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import "./repositoryPage.css";
 import Navbar from "../Navbar";
+import API_BASE_URL from "../../api";
 
 const RepoIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -128,7 +129,7 @@ const RepositoryPage = () => {
         setErrorMessage("");
 
         const res = await axios.get(
-          `http://localhost:3000/repo/id/${id}`
+          `${API_BASE_URL}/repo/id/${id}`
         );
 
         setRepository(res.data);
@@ -168,7 +169,7 @@ const RepositoryPage = () => {
           : {};
 
         const res = await axios.get(
-          `http://localhost:3000/repo/${id}/files`,
+          `${API_BASE_URL}/repo/${id}/files`,
           config
         );
 
@@ -215,7 +216,7 @@ const RepositoryPage = () => {
       };
 
       const res = await axios.get(
-        `http://localhost:3000/repo/${id}/file`,
+        `${API_BASE_URL}/repo/${id}/file`,
         config
       );
 

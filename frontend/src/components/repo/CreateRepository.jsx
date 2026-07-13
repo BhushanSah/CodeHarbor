@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
 import "./createRepository.css";
 import Navbar from "../Navbar";
+import API_BASE_URL from "../../api";
 
 const RepoIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -99,7 +100,7 @@ const CreateRepository = () => {
       setErrorMessage("");
 
       const res = await axios.post(
-        "http://localhost:3000/repo/create",
+        `${API_BASE_URL}/repo/create`,
         {
           owner,
           name: cleanName,

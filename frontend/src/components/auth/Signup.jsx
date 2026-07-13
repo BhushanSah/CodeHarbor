@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../authContext";
 import { Link } from "react-router-dom";
+import API_BASE_URL from "../../api";
 
 import logo from "../../assets/github-mark-white.svg";
 import "./auth.css";
@@ -63,7 +64,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:3000/signup", {
+      const res = await axios.post(`${API_BASE_URL}/signup`, {
         email: email,
         password: password,
         username: username,

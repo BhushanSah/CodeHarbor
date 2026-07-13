@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./dashboard.css";
 import Navbar from "../Navbar";
+import API_BASE_URL from "../../api";
 
 const RepoIcon = () => (
   <svg
@@ -98,7 +99,7 @@ const Dashboard = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:3000/repo/user/${userId}`
+          `${API_BASE_URL}/repo/user/${userId}`
         );
 
         setRepositories(
@@ -122,7 +123,7 @@ const Dashboard = () => {
 
     const fetchSuggestedRepositories = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/repo/public");
+        const res = await axios.get(`${API_BASE_URL}/repo/public`);
 
         setSuggestedRepositories(
           Array.isArray(res.data) ? res.data : res.data.repositories || []

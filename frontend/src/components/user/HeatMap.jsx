@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "./HeatMap.css";
+import API_BASE_URL from "../../api";
 
 const CELL_SIZE = 18;
 const CELL_GAP = 5;
@@ -150,7 +151,7 @@ const HeatMapProfile = ({ userId }) => {
         setActivityError("");
 
         const response = await axios.get(
-          `http://localhost:3000/userActivity/${userId}`
+          `${API_BASE_URL}/userActivity/${userId}`
         );
 
         setActivityData(response.data.activity || []);

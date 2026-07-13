@@ -5,6 +5,7 @@ import { useAuth } from "../../authContext";
 import "./Profile.css";
 import Navbar from "../Navbar";
 import HeatMapProfile from "./HeatMap";
+import API_BASE_URL from "../../api";
 const UserIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <circle cx="8" cy="5" r="2.8" stroke="currentColor" strokeWidth="1.4" />
@@ -128,7 +129,7 @@ const Profile = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:3000/userProfile/${userId}`
+          `${API_BASE_URL}/userProfile/${userId}`
         );
 
         console.log("User profile:", res.data);
@@ -161,7 +162,7 @@ const Profile = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:3000/repo/user/${userId}`
+          `${API_BASE_URL}/repo/user/${userId}`
         );
 
         const repoList = Array.isArray(res.data)

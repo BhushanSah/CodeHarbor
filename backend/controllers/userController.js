@@ -203,6 +203,101 @@ const deleteUserProfile=async(req,res)=>{
     }
 };
 
+const getUserActivity = async (req, res) => {
+  const currID = req.params.id;
+
+  try {
+    if (!ObjectId.isValid(currID)) {
+      return res.status(400).json({
+        message: "Invalid user ID",
+      });
+    }
+
+    await connectClient();
+
+    const db = client.db("CodeHarbor");
+    const repositoriesCollection = db.collection("repositories");
+    const issuesCollection = db.collection("issues");
+    const commentsCollection = db.collection("comments");
+
+    const userObjectId = new ObjectId(currID);
+
+    const repositories = await repositoriesCollection
+      .find({ owner: userObjectId })
+      .toArray();
+
+    const repositoryIds = repositories.map((repo) => repo._id);
+
+    const issues =
+      repositoryIds.length > 0
+        ? await issuesCollection
+            .find({
+              repository: {
+                $in: repositoryIds,
+              },
+            })
+            .toArray()
+        : [];
+
+    const comments =
+      repositoryIds.length > 0
+        ? await commentsCollection
+            .find({
+              repository: {
+                $in: repositoryIds,
+              },
+            })
+            .toArray()
+        : [];
+
+    const activityMap = {};
+
+    const addActivity = (dateValue) => {
+      if (!dateValue) return;
+
+      const date = new Date(dateValue);
+
+      if (Number.isNaN(date.getTime())) return;
+
+      const dateKey = date.toISOString().split("T")[0];
+
+      activityMap[dateKey] = (activityMap[dateKey] || 0) + 1;
+    };
+
+    repositories.forEach((repo) => {
+      addActivity(repo.createdAt || repo._id?.getTimestamp?.());
+      addActivity(repo.updatedAt);
+    });
+
+    issues.forEach((issue) => {
+      addActivity(issue.createdAt || issue._id?.getTimestamp?.());
+      addActivity(issue.updatedAt);
+    });
+
+    comments.forEach((comment) => {
+      addActivity(comment.createdAt || comment._id?.getTimestamp?.());
+      addActivity(comment.updatedAt);
+    });
+
+    const activity = Object.entries(activityMap).map(([date, count]) => ({
+      date,
+      count,
+    }));
+
+    activity.sort((a, b) => a.date.localeCompare(b.date));
+
+    return res.status(200).json({
+      activity,
+    });
+  } catch (err) {
+    console.error("Error fetching user activity:", err.message);
+
+    return res.status(500).json({
+      message: "Server error while fetching user activity.",
+    });
+  }
+};
+
 module.exports={
     getAllUsers,
     signup,
@@ -210,4 +305,5 @@ module.exports={
     getUserProfile,
     updateUserProfile,
     deleteUserProfile,
+    getUserActivity,
 };

@@ -391,7 +391,7 @@ httpServer.listen(port, "0.0.0.0", () => {
 Frontend:
 
 ```text
-https://bscodeharbor.netlify.app/
+https://bhushan-codeharbor.netlify.app/
 ```
 
 Backend:

@@ -2,7 +2,7 @@
 
 CodeHarbor is a GitHub-inspired full-stack developer platform for creating repositories, tracking issues, adding comments, viewing contribution activity, and connecting local projects through a custom CLI workflow.
 
-**Live Website:** https://bscodeharbor.netlify.app/
+**Live Website:** https://bhushan-codeharbor.netlify.app/
 
 ---
 
@@ -391,7 +391,7 @@ httpServer.listen(port, "0.0.0.0", () => {
 Frontend:
 
 ```text
-https://bscodeharbor.netlify.app/
+https://bhushan-codeharbor.netlify.app/
 ```
 
 Backend:

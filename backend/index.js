@@ -90,8 +90,6 @@ function startServer(){
     .then(()=>console.log("MongoDB connected"))
     .catch((err)=>console.error("Error while connecting database", err));
 
-    const allowedOrigins = [ "http://localhost:5173",process.env.FRONTEND_URL, ];
-
     const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND_URL,];
     app.use(cors({origin: allowedOrigins,}));
     app.use("/", mainRouter);

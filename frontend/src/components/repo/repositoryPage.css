@@ -683,3 +683,109 @@ button.repository-file-row:focus-visible {
 .repository-tab {
   text-decoration: none;
 }
+
+/* Large screen repository page fix */
+
+.repository-page {
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0px 58px 80px !important;
+  box-sizing: border-box;
+}
+
+.repository-layout {
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.repository-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.repository-header {
+  width: 100%;
+  max-width: none !important;
+  box-sizing: border-box;
+}
+
+.repository-content-grid {
+  width: 100%;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 340px !important;
+  gap: 32px !important;
+  align-items: start !important;
+}
+
+.repository-main-column {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.repository-sidebar {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.repository-files-card,
+.repository-preview-card {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.repository-command {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+}
+
+.repository-command code,
+.repository-side-card code {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+@media (min-width: 1500px) {
+  .repository-page {
+    padding-left: 72px !important;
+    padding-right: 72px !important;
+  }
+
+  .repository-content-grid {
+    grid-template-columns: minmax(0, 1fr) 360px !important;
+    gap: 36px !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .repository-page {
+    padding: 0px 28px 70px !important;
+  }
+
+  .repository-content-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .repository-page {
+    padding: 0px 18px 60px !important;
+  }
+
+  .repository-name-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .repository-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

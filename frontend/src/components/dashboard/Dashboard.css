@@ -425,3 +425,82 @@
   border-color: #484f58;
   background: #30363d;
 }
+
+/* Final dashboard layout fix */
+
+.dashboard-page {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0px 58px 80px;
+  box-sizing: border-box;
+}
+
+.dash-layout {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr) 320px;
+  gap: 32px;
+  align-items: start;
+}
+
+.dash-main,
+.dash-aside {
+  min-width: 0;
+  width: 100%;
+}
+
+.dash-main .repo-list.repo-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.dash-main .repo-list.repo-grid > * {
+  width: 100%;
+  max-width: none;
+}
+
+@media (min-width: 1500px) {
+  .dashboard-page {
+    padding-left: 72px;
+    padding-right: 72px;
+  }
+
+  .dash-layout {
+    grid-template-columns: 400px minmax(0, 1fr) 340px;
+    gap: 36px;
+  }
+
+  .dash-main .repo-list.repo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1200px) {
+  .dash-layout {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+
+  .dash-layout .dash-aside:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 850px) {
+  .dashboard-page {
+    padding: 0px 18px 60px;
+  }
+
+  .dash-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-main .repo-list.repo-grid {
+    grid-template-columns: 1fr;
+  }
+}

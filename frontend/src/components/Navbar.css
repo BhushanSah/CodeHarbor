@@ -21,10 +21,10 @@
 }
 
 .navbar-inner {
-  width: min(1280px, 100%);
+  width: 100%;
   min-height: 56px;
-  margin: 0 auto;
-  padding: 0 clamp(16px, 4vw, 48px);
+  margin: 0;
+  padding: 0 58px;
 
   display: flex;
   align-items: center;
@@ -143,6 +143,19 @@
   outline-offset: 3px;
 }
 
+@media (min-width: 1500px) {
+  .navbar-inner {
+    padding-left: 72px;
+    padding-right: 72px;
+  }
+}
+
+@media (max-width: 850px) {
+  .navbar-inner {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
 @media (max-width: 520px) {
   .navbar,
   .navbar-inner {
